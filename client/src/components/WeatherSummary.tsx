@@ -1,18 +1,28 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getDateFormatted, getGreeting, getOutfitSuggestionByTemperature, getWeatherData, getWeatherIcon } from "@/lib/weather";
+import { 
+  getDateFormatted, 
+  getGreeting, 
+  getOutfitSuggestionByTemperature, 
+  getWeatherData, 
+  getWeatherIcon 
+} from "@/lib/weather";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
+import LocationSelector from "./LocationSelector";
 
 interface WeatherSummaryProps {
   username?: string;
-  location?: string;
+  initialLocation?: string;
 }
 
-const WeatherSummary = ({ username = 'User', location = 'New York' }: WeatherSummaryProps) => {
+const WeatherSummary = ({ username = 'User', initialLocation = 'New York' }: WeatherSummaryProps) => {
   const { toast } = useToast();
+  const [location, setLocation] = useState(initialLocation);
+  const [showLocationSelector, setShowLocationSelector] = useState(false);
   
   const { data: weatherData, isLoading, isError, refetch } = useQuery({ 
     queryKey: ['/api/weather', location],
@@ -34,6 +44,11 @@ const WeatherSummary = ({ username = 'User', location = 'New York' }: WeatherSum
     });
   };
 
+  const handleLocationChange = (newLocation: string) => {
+    setLocation(newLocation);
+    setShowLocationSelector(false);
+  };
+
   return (
     <Card className="w-full overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
@@ -42,12 +57,34 @@ const WeatherSummary = ({ username = 'User', location = 'New York' }: WeatherSum
             <CardTitle className="text-2xl font-bold">{getGreeting(username)}</CardTitle>
             <p className="text-sm opacity-90">{getDateFormatted()}</p>
           </div>
-          <Button variant="outline" size="sm" onClick={handleRefresh} className="bg-white/20 border-white/40 text-white hover:bg-white/30">
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowLocationSelector(!showLocationSelector)}
+              className="bg-white/20 border-white/40 text-white hover:bg-white/30"
+            >
+              {showLocationSelector ? 'Cancel' : 'Change Location'}
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleRefresh} 
+              className="bg-white/20 border-white/40 text-white hover:bg-white/30"
+            >
+              Refresh
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="pt-6">
+        {showLocationSelector && (
+          <div className="mb-4 p-3 border rounded-md bg-slate-50 dark:bg-slate-900">
+            <h3 className="text-sm font-medium mb-2">Change Your Location</h3>
+            <LocationSelector currentLocation={location} onLocationChange={handleLocationChange} />
+          </div>
+        )}
+        
         {isLoading ? (
           <div className="space-y-3">
             <Skeleton className="h-6 w-36" />
@@ -64,7 +101,7 @@ const WeatherSummary = ({ username = 'User', location = 'New York' }: WeatherSum
               Try Again
             </Button>
           </div>
-        ) : (
+        ) : weatherData ? (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <div>
@@ -100,6 +137,13 @@ const WeatherSummary = ({ username = 'User', location = 'New York' }: WeatherSum
                 {getOutfitSuggestionByTemperature(weatherData.temperature)}
               </p>
             </div>
+          </div>
+        ) : (
+          <div className="text-center py-4">
+            <p className="text-amber-500 mb-2">Weather data is unavailable</p>
+            <Button variant="outline" size="sm" onClick={handleRefresh}>
+              Try Again
+            </Button>
           </div>
         )}
       </CardContent>
