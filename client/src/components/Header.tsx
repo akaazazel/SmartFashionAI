@@ -6,19 +6,24 @@ import { Button } from '@/components/ui/button';
 import { 
   Bell, 
   Search,
-  Menu 
+  Menu,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
-
-  // For MVP we'll use a hardcoded user
-  const user = {
-    name: 'Emma Wilson',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=128&q=80'
-  };
+  const { user, logoutMutation } = useAuth();
 
   return (
     <header className="bg-white shadow-sm">
@@ -35,28 +40,58 @@ const Header = () => {
         </div>
         
         <div className="md:flex items-center space-x-4 hidden">
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search your wardrobe..."
-              className="pl-10 pr-4 py-2 w-64"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-          </div>
+          {user && (
+            <>
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Search your wardrobe..."
+                  className="pl-10 pr-4 py-2 w-64"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              </div>
+              
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <Bell className="h-5 w-5 text-gray-600" />
+              </Button>
+            </>
+          )}
           
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Bell className="h-5 w-5 text-gray-600" />
-          </Button>
-          
-          <div className="flex items-center">
-            <Avatar>
-              <AvatarImage src={user.avatarUrl} alt={user.name} />
-              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <span className="ml-2 text-sm font-medium hidden sm:inline-block">{user.name}</span>
-          </div>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex items-center cursor-pointer">
+                  <Avatar>
+                    <AvatarImage src={user.avatarUrl || undefined} alt={user.displayName || user.username} />
+                    <AvatarFallback>{(user.displayName || user.username).charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <span className="ml-2 text-sm font-medium hidden sm:inline-block">
+                    {user.displayName || user.username}
+                  </span>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={() => {}} className="cursor-pointer">
+                  Profile Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="text-red-600 cursor-pointer" 
+                  onSelect={() => logoutMutation.mutate()}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href="/auth">
+              <Button size="sm">Login</Button>
+            </Link>
+          )}
         </div>
         
         <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>

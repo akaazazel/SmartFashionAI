@@ -9,6 +9,9 @@ import Wardrobe from "@/pages/Wardrobe";
 import Outfits from "@/pages/Outfits";
 import Recommendations from "@/pages/Recommendations";
 import Sustainability from "@/pages/Sustainability";
+import AuthPage from "@/pages/auth-page";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
   return (
@@ -16,11 +19,12 @@ function Router() {
       <Header />
       <main className="flex-grow">
         <Switch>
-          <Route path="/" component={Wardrobe} />
-          <Route path="/wardrobe" component={Wardrobe} />
-          <Route path="/outfits" component={Outfits} />
-          <Route path="/recommendations" component={Recommendations} />
-          <Route path="/sustainability" component={Sustainability} />
+          <ProtectedRoute path="/" component={Wardrobe} />
+          <ProtectedRoute path="/wardrobe" component={Wardrobe} />
+          <ProtectedRoute path="/outfits" component={Outfits} />
+          <ProtectedRoute path="/recommendations" component={Recommendations} />
+          <ProtectedRoute path="/sustainability" component={Sustainability} />
+          <Route path="/auth" component={AuthPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -32,8 +36,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <AuthProvider>
+        <Router />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

@@ -20,7 +20,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Wardrobe items endpoints
   app.get("/api/wardrobe", async (req, res) => {
     try {
-      const items = await storage.getAllWardrobeItems(1); // Hardcoded user ID for MVP
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const userId = req.user!.id;
+      const items = await storage.getAllWardrobeItems(userId);
       res.json(items);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch wardrobe items", error: (error as Error).message });
@@ -44,7 +50,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/wardrobe", async (req, res) => {
     try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
       const validatedData = insertWardrobeItemSchema.parse(req.body);
+      
+      // Set the user ID from the authenticated user
+      validatedData.userId = req.user!.id;
       
       // Process image with AI if imageData is provided
       if (validatedData.imageData) {
