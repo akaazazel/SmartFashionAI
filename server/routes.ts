@@ -9,8 +9,11 @@ import {
   insertOutfitSchema, 
   insertWeatherPreferencesSchema
 } from "@shared/schema";
+import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication
+  setupAuth(app);
   // API routes
   const apiRouter = app.route("/api");
 

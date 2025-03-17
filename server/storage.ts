@@ -4,6 +4,10 @@ import {
   type Outfit, type InsertOutfit,
   type WeatherPreference, type InsertWeatherPreference
 } from "@shared/schema";
+import session from "express-session";
+import createMemoryStore from "memorystore";
+
+const MemoryStore = createMemoryStore(session);
 
 // Storage interface for CRUD operations
 export interface IStorage {
@@ -29,6 +33,9 @@ export interface IStorage {
   // Weather preferences operations
   getWeatherPreferences(userId: number): Promise<WeatherPreference | undefined>;
   setWeatherPreferences(preferences: InsertWeatherPreference): Promise<WeatherPreference>;
+  
+  // Session store
+  sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
@@ -41,6 +48,8 @@ export class MemStorage implements IStorage {
   private wardrobeItemIdCounter: number;
   private outfitIdCounter: number;
   private weatherPrefIdCounter: number;
+  
+  public sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
@@ -52,6 +61,11 @@ export class MemStorage implements IStorage {
     this.wardrobeItemIdCounter = 1;
     this.outfitIdCounter = 1;
     this.weatherPrefIdCounter = 1;
+    
+    // Initialize the memory store for session management
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    });
     
     // Initialize with a default user
     this.createUser({
