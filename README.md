@@ -39,3 +39,7 @@ The application will automatically load these keys.
    ```bash
    npm run dev
    ```
+
+6. **Open the application:**
+
+   The app will be available on `http://localhost:5000/`
