@@ -12,22 +12,30 @@ This project requires two API keys:
 - OpenWeather API key for weather data
 
 To set up these keys:
-1. Go to the Tools panel in your Repl
-2. Click on "Secrets"
-3. Add the following secrets:
-   - Key: `GEMINI_API_KEY`, Value: Your Google Gemini API key
-   - Key: `OPENWEATHER_API_KEY`, Value: Your OpenWeather API key
+1. Go to the root folder
+2. Create a .env file
+3. Add the following keys:
 
-The application will automatically load these secrets as environment variables.
+   ```env
+   GEMINI_API_KEY=your_api_key
+   OPENWEATHER_API_KEY=your_api_key
+   ```
+
+The application will automatically load these keys.
 
 **Important**: Never commit API keys directly in your code or .env files for security reasons.
 
 
 3. **Install dependencies:**
+   
    ```bash
-   npm install
+   npm install dotenv
+   ```
+   ```bash
+   npm install --save-dev @types/dotenv
    ```
 
-4. **Run the application:**
+5. **Run the application:**
    ```bash
-   npm start
+   npm run dev
+   ```
