@@ -8,13 +8,13 @@ const Footer = () => {
           <p>&copy; {new Date().getFullYear()} SmartWardrobe AI. All rights reserved.</p>
           <div className="mt-2">
             <Link href="/privacy">
-              <a className="text-gray-500 hover:text-gray-700 mx-2">Privacy Policy</a>
+              <span className="text-gray-500 hover:text-gray-700 mx-2 cursor-pointer">Privacy Policy</span>
             </Link>
             <Link href="/terms">
-              <a className="text-gray-500 hover:text-gray-700 mx-2">Terms of Service</a>
+              <span className="text-gray-500 hover:text-gray-700 mx-2 cursor-pointer">Terms of Service</span>
             </Link>
             <Link href="/contact">
-              <a className="text-gray-500 hover:text-gray-700 mx-2">Contact Us</a>
+              <span className="text-gray-500 hover:text-gray-700 mx-2 cursor-pointer">Contact Us</span>
             </Link>
           </div>
         </div>
