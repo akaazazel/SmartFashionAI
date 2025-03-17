@@ -221,14 +221,27 @@ export class MemStorage implements IStorage {
     const existingPrefs = await this.getWeatherPreferences(preferences.userId);
     
     if (existingPrefs) {
-      // Update existing preferences
-      const updatedPrefs: WeatherPreference = { ...existingPrefs, ...preferences };
+      // Update existing preferences with explicit nulls
+      const updatedPrefs: WeatherPreference = { 
+        ...existingPrefs,
+        location: preferences.location,
+        unit: preferences.unit || null,
+        minTemperature: preferences.minTemperature || null,
+        maxTemperature: preferences.maxTemperature || null
+      };
       this.weatherPreferences.set(existingPrefs.id, updatedPrefs);
       return updatedPrefs;
     } else {
-      // Create new preferences
+      // Create new preferences with explicit nulls
       const id = this.weatherPrefIdCounter++;
-      const newPrefs: WeatherPreference = { ...preferences, id };
+      const newPrefs: WeatherPreference = { 
+        id,
+        userId: preferences.userId,
+        location: preferences.location,
+        unit: preferences.unit || null,
+        minTemperature: preferences.minTemperature || null,
+        maxTemperature: preferences.maxTemperature || null
+      };
       this.weatherPreferences.set(id, newPrefs);
       return newPrefs;
     }
