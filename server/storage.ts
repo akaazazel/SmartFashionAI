@@ -426,3 +426,57 @@ export class MemStorage implements IStorage {
 }
 
 export const storage = new MemStorage();
+// Sample data
+const sampleWardrobeItems = [
+  {
+    name: "Blue Cotton T-Shirt",
+    category: "tops",
+    type: "t-shirt",
+    color: "blue",
+    material: "cotton",
+    style: "casual",
+    imageUrl: "https://picsum.photos/200/300",
+    sustainabilityScore: 85,
+    attributes: { fit: "regular", sleeve: "short" },
+    occasion: "casual",
+    season: "summer"
+  },
+  {
+    name: "Black Jeans",
+    category: "bottoms",
+    type: "jeans",
+    color: "black", 
+    material: "denim",
+    style: "casual",
+    imageUrl: "https://picsum.photos/200/300",
+    sustainabilityScore: 75,
+    attributes: { fit: "slim", length: "full" },
+    occasion: "casual",
+    season: "all-season"
+  },
+  {
+    name: "White Dress Shirt",
+    category: "tops",
+    type: "shirt",
+    color: "white",
+    material: "cotton",
+    style: "formal",
+    imageUrl: "https://picsum.photos/200/300",
+    sustainabilityScore: 80,
+    attributes: { fit: "regular", sleeve: "long" },
+    occasion: "formal",
+    season: "all-season"
+  }
+];
+
+// Insert sample data for new users
+export async function insertSampleData(userId: number) {
+  for (const item of sampleWardrobeItems) {
+    await createWardrobeItem({
+      ...item,
+      userId,
+      lastWorn: null,
+      imageData: null
+    });
+  }
+}
