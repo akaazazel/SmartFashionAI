@@ -18,8 +18,8 @@ export interface ClothingAnalysisResult {
 
 export async function analyzeClothingImage(base64Image: string): Promise<ClothingAnalysisResult> {
   try {
-    // Use Gemini Pro Vision model for image analysis
-    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+    // Use Gemini 1.5 Flash model for image analysis (gemini-pro-vision was deprecated July 12, 2024)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Configure safety settings
     const safetySettings = [
@@ -121,8 +121,8 @@ export async function generateOutfitRecommendations(
   occasion: string = "casual"
 ): Promise<any[]> {
   try {
-    // Use Gemini Pro for text generation
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Use Gemini 1.5 Flash for text generation (upgraded from gemini-pro)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const prompt = `Create 3 outfit recommendations based on the following:
     
@@ -173,8 +173,8 @@ export async function analyzeSustainability(material: string): Promise<{
   tips: string[]
 }> {
   try {
-    // Use Gemini Pro for text generation
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Use Gemini 1.5 Flash for text generation (upgraded from gemini-pro)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const prompt = `Analyze the sustainability of clothing made from ${material}. Provide a sustainability score from 0-100, a brief explanation, and 3 tips for sustainable care or alternatives. Format as JSON with fields: score, explanation, tips (array).`;
 
