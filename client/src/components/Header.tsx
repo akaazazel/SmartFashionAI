@@ -35,7 +35,7 @@ const Header = () => {
             <path d="M2 12H4M20 12H22M12 2V4M12 20V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
           <Link href="/">
-            <a className="ml-2 text-xl font-bold text-gray-800">SmartWardrobe AI</a>
+            <span className="ml-2 text-xl font-bold text-gray-800 cursor-pointer">SmartWardrobe AI</span>
           </Link>
         </div>
         
@@ -114,24 +114,24 @@ const Header = () => {
           </div>
           <nav className="mt-2 space-y-1">
             <Link href="/wardrobe">
-              <a className={`block px-3 py-2 rounded-md ${location === '/wardrobe' || location === '/' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+              <span className={`block px-3 py-2 rounded-md cursor-pointer ${location === '/wardrobe' || location === '/' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
                 My Wardrobe
-              </a>
+              </span>
             </Link>
             <Link href="/outfits">
-              <a className={`block px-3 py-2 rounded-md ${location === '/outfits' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+              <span className={`block px-3 py-2 rounded-md cursor-pointer ${location === '/outfits' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
                 Outfits
-              </a>
+              </span>
             </Link>
             <Link href="/recommendations">
-              <a className={`block px-3 py-2 rounded-md ${location === '/recommendations' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+              <span className={`block px-3 py-2 rounded-md cursor-pointer ${location === '/recommendations' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
                 Recommendations
-              </a>
+              </span>
             </Link>
             <Link href="/sustainability">
-              <a className={`block px-3 py-2 rounded-md ${location === '/sustainability' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+              <span className={`block px-3 py-2 rounded-md cursor-pointer ${location === '/sustainability' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
                 Sustainability
-              </a>
+              </span>
             </Link>
           </nav>
         </div>

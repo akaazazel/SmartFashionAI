@@ -35,11 +35,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/wardrobe/:id", async (req, res) => {
     try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
       const itemId = parseInt(req.params.id);
       const item = await storage.getWardrobeItem(itemId);
       
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
+      }
+      
+      // Verify that the item belongs to the authenticated user
+      if (item.userId !== req.user!.id) {
+        return res.status(403).json({ message: "Forbidden: You don't have permission to access this item" });
       }
       
       res.json(item);
@@ -94,7 +104,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/wardrobe/:id", async (req, res) => {
     try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
       const itemId = parseInt(req.params.id);
+      
+      // Get the item first to check ownership
+      const item = await storage.getWardrobeItem(itemId);
+      
+      // Check if item exists
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      // Verify that the item belongs to the authenticated user
+      if (item.userId !== req.user!.id) {
+        return res.status(403).json({ message: "Forbidden: You don't have permission to delete this item" });
+      }
+      
       await storage.deleteWardrobeItem(itemId);
       res.status(204).send();
     } catch (error) {
@@ -105,7 +134,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Outfit endpoints
   app.get("/api/outfits", async (req, res) => {
     try {
-      const outfits = await storage.getAllOutfits(1); // Hardcoded user ID for MVP
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const userId = req.user!.id;
+      const outfits = await storage.getAllOutfits(userId);
       res.json(outfits);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch outfits", error: (error as Error).message });
@@ -114,7 +149,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/outfits", async (req, res) => {
     try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
       const validatedData = insertOutfitSchema.parse(req.body);
+      
+      // Set the user ID from the authenticated user
+      validatedData.userId = req.user!.id;
+      
       const newOutfit = await storage.createOutfit(validatedData);
       res.status(201).json(newOutfit);
     } catch (error) {
@@ -166,7 +210,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Recommendations endpoint
   app.get("/api/recommendations", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded user ID for MVP
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const userId = req.user!.id;
       const occasion = req.query.occasion as string || 'casual';
       const season = req.query.season as string;
       
@@ -332,7 +381,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Weather preferences endpoint
   app.post("/api/weather-preferences", async (req, res) => {
     try {
+      // Check if user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
       const validatedData = insertWeatherPreferencesSchema.parse(req.body);
+      
+      // Set the user ID from the authenticated user
+      validatedData.userId = req.user!.id;
+      
       const preferences = await storage.setWeatherPreferences(validatedData);
       res.status(201).json(preferences);
     } catch (error) {
