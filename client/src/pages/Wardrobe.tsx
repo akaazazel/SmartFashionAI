@@ -26,19 +26,24 @@ const Wardrobe = () => {
     try {
       // Create wardrobe item from analysis result
       const newItem: InsertWardrobeItem = {
-        userId: 1, // Hardcoded for now
-        name: `${result.color} ${result.type}`,
-        category: result.category,
-        color: result.color,
-        material: result.material,
-        type: result.type,
-        style: result.style,
-        season: result.season,
-        sustainabilityScore: result.sustainabilityScore,
-        imageData: result.imageData,
-        attributes: result.attributes
+        userId: 0, // Will be overwritten by the server with authenticated user's ID
+        name: result.type ? `${result.color || 'Unknown'} ${result.type}` : 'New Item',
+        category: result.category || 'other', // Make sure category is not empty
+        type: result.type || 'clothing', // Make sure type is not empty
+        // Optional fields
+        color: result.color || null,
+        material: result.material || null,
+        style: result.style || null,
+        occasion: result.occasion || null,
+        season: result.season || null,
+        imageData: result.imageData || null,
+        sustainabilityScore: typeof result.sustainabilityScore === 'number' ? result.sustainabilityScore : null,
+        attributes: result.attributes || {},
+        imageUrl: null,
+        lastWorn: null
       };
 
+      console.log('Sending wardrobe item:', newItem);
       const response = await apiRequest('POST', '/api/wardrobe', newItem);
       
       if (response.ok) {
@@ -50,13 +55,15 @@ const Wardrobe = () => {
         // Invalidate wardrobe query to refresh the list
         queryClient.invalidateQueries({ queryKey: ['/api/wardrobe'] });
       } else {
-        throw new Error('Failed to add item');
+        const errorData = await response.json();
+        console.error('API error:', errorData);
+        throw new Error(errorData.message || 'Failed to add item');
       }
     } catch (error) {
       console.error('Error saving analyzed item:', error);
       toast({
         title: "Error saving item",
-        description: "There was a problem adding this item to your wardrobe",
+        description: error instanceof Error ? error.message : "There was a problem adding this item to your wardrobe",
         variant: "destructive",
       });
     }

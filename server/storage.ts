@@ -103,7 +103,14 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userIdCounter++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      id,
+      username: insertUser.username,
+      password: insertUser.password,
+      displayName: insertUser.displayName || null,
+      email: insertUser.email || null,
+      avatarUrl: insertUser.avatarUrl || null
+    };
     this.users.set(id, user);
     return user;
   }
@@ -121,11 +128,27 @@ export class MemStorage implements IStorage {
   async createWardrobeItem(item: InsertWardrobeItem): Promise<WardrobeItem> {
     const id = this.wardrobeItemIdCounter++;
     const now = new Date();
-    const wardrobeItem: WardrobeItem = { 
-      ...item, 
-      id, 
-      createdAt: now 
+    
+    // Create the item with explicitly defined fields to handle nulls properly
+    const wardrobeItem: WardrobeItem = {
+      id,
+      userId: item.userId,
+      name: item.name,
+      type: item.type,
+      category: item.category,
+      color: item.color || null,
+      material: item.material || null,
+      style: item.style || null,
+      imageUrl: item.imageUrl || null,
+      imageData: item.imageData || null,
+      sustainabilityScore: item.sustainabilityScore || null,
+      attributes: item.attributes || {},
+      occasion: item.occasion || null,
+      season: item.season || null,
+      lastWorn: item.lastWorn || null,
+      createdAt: now
     };
+    
     this.wardrobeItems.set(id, wardrobeItem);
     return wardrobeItem;
   }
@@ -156,11 +179,20 @@ export class MemStorage implements IStorage {
   async createOutfit(outfit: InsertOutfit): Promise<Outfit> {
     const id = this.outfitIdCounter++;
     const now = new Date();
+    
+    // Create the outfit with explicitly defined fields to handle nulls properly
     const newOutfit: Outfit = { 
-      ...outfit, 
-      id, 
-      createdAt: now 
+      id,
+      name: outfit.name,
+      userId: outfit.userId,
+      items: outfit.items,
+      sustainabilityScore: outfit.sustainabilityScore || null,
+      occasion: outfit.occasion || null,
+      season: outfit.season || null,
+      isFavorite: outfit.isFavorite || null,
+      createdAt: now
     };
+    
     this.outfits.set(id, newOutfit);
     return newOutfit;
   }
