@@ -13,7 +13,7 @@ interface WeatherData {
 
 export async function getWeatherData(location: string): Promise<WeatherData> {
   try {
-    const apiKey = "d7d197a14e3e3aa94e0cad25e61ef31e";
+    const apiKey = process.env.OPENWEATHER_API_KEY;
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
 
     const response = await fetch(url);
@@ -91,7 +91,7 @@ export function getOutfitSuggestionByTemperature(temperature: number): string {
 export function getFiveDayForecast(location: string): Promise<any[]> {
   return new Promise(async (resolve, reject) => {
     try {
-      const apiKey = "YOUR-OPENWEATHER-API-KEY-HERE";
+      const apiKey = process.env.OPENWEATHER_API_KEY;
       const url = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${apiKey}&units=metric`;
 
       const response = await fetch(url);

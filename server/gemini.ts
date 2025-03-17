@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+
 import {
   GoogleGenerativeAI,
   HarmCategory,
@@ -5,7 +7,14 @@ import {
 } from "@google/generative-ai";
 
 // Initialize the Gemini API with the provided API key
-const genAI = new GoogleGenerativeAI("AIzaSyBN4OFp1eKJ_0T167Q1wEvCFlFq5TpbDd8");
+dotenv.config();
+const apiKey = process.env.GEMINI_API_KEY as string;
+
+if (!apiKey) {
+  throw new Error("API_KEY is missing in environment variables.");
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
 
 // Clothing Image Analysis
 export interface ClothingAnalysisResult {
