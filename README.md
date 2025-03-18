@@ -11,7 +11,7 @@
 - **Automatic Outfit Recommendations:** SmartWardrobe AI provides automatic outfit recommendations using AI algorithms.
 - **Sustainability Scoring:** The application calculates a sustainability score for clothing items and provides insights into your wardrobe's environmental impact.
 
-![screenshots_of_the_project](https://imgur.com/gVfM8QJ)
+![screenshots_of_the_project](https://i.imgur.com/gVfM8QJ.png)
 
 ## Project Setup
 
